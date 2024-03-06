@@ -1,0 +1,1 @@
+	menuentry 'Ubuntu, with Linux 5.15.0-91-generic (recovery mode)' --class ubuntu --class gnu-linux --class gnu --class os $menuentry_id_option 'gnulinux-5.15.0-91-generic-recovery-f624b592-0a85-4145-9b22-e93e08754400' {
