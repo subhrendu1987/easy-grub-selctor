@@ -1,5 +1,19 @@
 #!/bin/bash
-
+##########################################################################
+find_line_number() {
+    read -p "Enter the serial number: " SERIAL_NUMBER
+    # Search for the line number that matches the provided serial number
+    #LINE_NUMBER=$(echo "$GRUB_ENTRIES" | awk -v serial="^$SERIAL_NUMBER\." '$0 ~ serial {print NR}')
+    LINE_NUMBER=$(echo "$GRUB_ENTRIES" | grep -n  "^[[:blank:]]*$SERIAL_NUMBER\. "| awk -F":" '{print $1}')
+    if [ -n "$LINE_NUMBER" ]; then
+        #echo "Line Number: $LINE_NUMBER"
+        #echo -n "Selected GRUB Entry:"
+        SELECTED_ENTRY=$(echo "$GRUB_ENTRIES" | awk -v line="$LINE_NUMBER" 'NR == line {print}' | awk -F"." '{print $2}')
+    else
+        echo "No entry found with serial number: $SERIAL_NUMBER"
+    fi
+}
+##########################################################################
 # Function to find the default entry in GRUB
 find_default_entry() {
     # Check if the GRUB_DEFAULT variable is set in /etc/default/grub
@@ -17,27 +31,31 @@ find_default_entry() {
         echo "GRUB_DEFAULT is not set in /etc/default/grub."
     fi
 }
-
+##########################################################################
 # Function to display GRUB entries
 display_grub_boot_entries() {
-GRUB_ENTRIES=$(awk -F\' '/^menuentry / {printf "\t%d. GRUB_DEFAULT=\"%s\"\n", ++count, $2}
+GRUB_ENTRIES=$(awk -F\' '/^menuentry / {printf "%d. GRUB_DEFAULT=\"%s\"\n", ++count, $2}
                   /^submenu / {submenu=$2; subcount=0; ++count}
-                  /^\tmenuentry / {printf "\t\t%d>%d. GRUB_DEFAULT=\"%s>%s\"\n", count, ++subcount, submenu, $2}' /boot/grub/grub.cfg)
+                  /^\tmenuentry / {printf "%d>%d. GRUB_DEFAULT=\"%s>%s\"\n", count, ++subcount, submenu, $2}' /boot/grub/grub.cfg)
 
     echo "GRUB Boot Entries:"
     echo "$GRUB_ENTRIES"
 }
-
+##########################################################################
 # Check if the script is run with root privileges
 if [ "$(id -u)" != "0" ]; then
     echo "This script requires root privileges to access GRUB configuration."
     exit 1
 fi
-
+##########################################################################
 # Call function to display GRUB entries
 display_grub_boot_entries
-
+echo "--------------"
+find_default_entry
+echo "--------------"
+find_line_number
+echo "[Selected Entry] "$SELECTED_ENTRY
 echo "--------------"
 echo "[Note] Modify /etc/default/grub file with the suitable entries"
-find_default_entry
+
 echo "Update grub with sudo update-grub"
