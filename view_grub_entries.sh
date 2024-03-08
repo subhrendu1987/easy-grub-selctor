@@ -1,20 +1,20 @@
 #!/bin/bash
-
+##########################################################################
 comment_and_add_line() {
     local match_string="$1"
-    local new_line="$2"
+    local replacement="$2"
 
     # Check if /etc/default/grub file exists
     if [ -f "/etc/default/grub" ]; then
         # Search for the match string in /etc/default/grub
-        if grep -q "^$match_string" /etc/default/grub; then
-            sed -i "/^$match_string/ { s/^/#/; a $new_line }" /etc/default/grub
-
-            # Comment out the matching line
-            #sed -i "s/^$match_string/#&/" /etc/default/grub
-            # Add a new line just after the commented line
-            #sed -i "/^#.*$match_string/a $new_line" /etc/default/grub
-            echo "Match found in /etc/default/grub. Line commented and new line added."
+        LINE=$(grep -n "^$match_string" /etc/default/grub)
+        if [ -n "$LINE" ]; then
+            LINE_NO=$(echo $LINE | awk -F":" '{print $1}')
+            LINE_TEXT=$(echo $LINE | awk -F":" '{print $2}')
+            NEW_LINES="# $LINE_TEXT\n$replacement"
+            echo "- $LINE_TEXT" 
+            echo "+ $NEW_LINES"
+            
         else
             echo "Match not found in /etc/default/grub."
         fi
@@ -81,7 +81,7 @@ echo "--------------"
 # Modify /etc/default/grub file with the suitable entries
 if [ -n "$SELECTED_ENTRY" ]; then
     echo "[Selected Entry] "$SELECTED_ENTRY
-    #comment_and_add_line "GRUB_DEFAULT" "$SELECTED_ENTRY"
+    comment_and_add_line "GRUB_DEFAULT" "$SELECTED_ENTRY"
     echo "Modify /etc/default/grub file with the suitable entries"
     echo "Update grub with \$ sudo update-grub"
 fi
