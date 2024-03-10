@@ -1,10 +1,5 @@
 #!/bin/bash
 SAVE_COLOR="\033[0m"
-
-# Change text color to red
-#RED_COLOR="\033[31m"
-# Change text color to green
-#GREEN_COLOR="\033[32m"
 GREEN='\033[0;32m'
 RED='\033[0;31m'
 ##########################################################################
