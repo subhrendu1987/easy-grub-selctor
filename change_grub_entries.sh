@@ -1,4 +1,6 @@
 #!/bin/bash
+GREEN='\033[0;32m'
+RED= '\033[0;31m'
 ##########################################################################
 comment_and_add_line() {
     local match_string="$1"
@@ -12,8 +14,8 @@ comment_and_add_line() {
             LINE_NO=$(echo $LINE | awk -F":" '{print $1}')
             LINE_TEXT=$(echo $LINE | awk -F":" '{print $2}')
             NEW_LINES="# $LINE_TEXT\n$replacement"
-            echo "- $LINE_TEXT" 
-            echo "+ $NEW_LINES"
+            echo -e "${RED}- $LINE_TEXT" 
+            echo -e "${GREEN}+ $NEW_LINES"
             
         else
             echo "Match not found in /etc/default/grub."
