@@ -1,6 +1,12 @@
 #!/bin/bash
+SAVE_COLOR="\033[0m"
+
+# Change text color to red
+#RED_COLOR="\033[31m"
+# Change text color to green
+#GREEN_COLOR="\033[32m"
 GREEN='\033[0;32m'
-RED= '\033[0;31m'
+RED='\033[0;31m'
 ##########################################################################
 comment_and_add_line() {
     local match_string="$1"
@@ -16,6 +22,7 @@ comment_and_add_line() {
             NEW_LINES="# $LINE_TEXT\n$replacement"
             echo -e "${RED}- $LINE_TEXT" 
             echo -e "${GREEN}+ $NEW_LINES"
+            echo -e "${SAVE_COLOR}"
             
         else
             echo "Match not found in /etc/default/grub."
