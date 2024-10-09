@@ -14,7 +14,7 @@ comment_and_add_line() {
         if [ -n "$LINE" ]; then
             LINE_NO=$(echo $LINE | awk -F":" '{print $1}')
             LINE_TEXT=$(echo $LINE | awk -F":" '{print $2}')
-            NEW_LINES="# $LINE_TEXT\n$replacement"
+            NEW_LINES="# $LINE_TEXT\n$replacement \n GRUB_TIMEOUT_STYLE=menu "
             echo -e "${RED}- $LINE_TEXT" 
             echo -e "${GREEN}+ $NEW_LINES"
             echo -e "${SAVE_COLOR}"
